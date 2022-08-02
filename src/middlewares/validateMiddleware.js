@@ -10,21 +10,17 @@ const schemas = {
 
 export default async function validateEntry(req, res, next) {
   const schema = schemas[res.locals.reqPath];
-  const validationData = res.locals.validationData || {};
+  const validationData = res.locals.cleanData;
   try {
-    for (const data of validationData) {
-      const response = await invokeValidation(data, res.locals.reqPath);
-    }
+    const response = await schema.validateAsync(validationData, {
+      abortEarly: false,
+    });
+    res.locals.dbData = Object.entries(response);
     next();
   } catch (err) {
-    res.status(422).send(err.details[0].message);
+    const errMessage = err.details.map(res=>res.message.replaceAll("\"", "").replace('confirmPassword must be [ref:password]',"password does not match"));
+    console.log(errMessage);
+    res.status(422).send(errMessage);
     return;
   }
-}
-
-async function invokeValidation(data, schema) {
-  const res = await schema.validateAsync(data, {
-    abortEarly: false,
-  });
-  return res;
 }
