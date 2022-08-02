@@ -1,11 +1,11 @@
 import signinSchema from "../database/models/signinSchema.js";
 import signupSchema from "../database/models/signupSchema.js";
-import uriSchema from "../database/models/uriSchema.js";
+import urlSchema from "../database/models/urlSchema.js";
 
 const schemas = {
     signin: signinSchema,
     signup: signupSchema,
-    urls: uriSchema
+    urls: urlSchema
 }
 
 export default async function validateEntry(req, res, next) {
@@ -19,7 +19,6 @@ export default async function validateEntry(req, res, next) {
     next();
   } catch (err) {
     const errMessage = err.details.map(res=>res.message.replaceAll("\"", "").replace('confirmPassword must be [ref:password]',"password does not match"));
-    console.log(errMessage);
     res.status(422).send(errMessage);
     return;
   }
