@@ -1,14 +1,15 @@
 import { stripHtml } from "string-strip-html";
 
 export default function clearData(req, res, next) {
-  const data = req.body;
-  const output = { ...data };
-  for (let param in data) {
-    if (typeof output[param] === "string") {
-      output[param] = stripHtml(data[param]).result.trim();
+  const data = res.locals.reqData;
+  const output = [...data];
+  for(const object in data) {
+    for (const param in object) {
+      if (typeof output[param] === "string") {
+        output[object] = stripHtml(data[param]).result.trim();
+      }
     }
   }
   res.locals.cleanData = output;
-  res.locals.headers = req.headers;
   next();
 };
