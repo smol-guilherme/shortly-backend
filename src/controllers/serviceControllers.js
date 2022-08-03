@@ -25,7 +25,6 @@ export async function shortenUrl(req, res) {
     res.status(201).send(response[0]);
     return;
   } catch (err) {
-    console.log(err);
     res.status(409).send();
     return;
   }
@@ -58,9 +57,10 @@ export async function redirectByShortUrl(req, res) {
     const table = tableSelect(res.locals.reqPath);
     const queryData = res.locals.dbData.join().split(",").filter((i, id)=> id%2!==0);
     const queryString = `
-      SELECT "url"
-      FROM ${table}
-      WHERE "shortUrl"=$1;
+      UPDATE ${table}
+      SET "visitCount"="visitCount"+1
+      WHERE "shortUrl"=$1
+      RETURNING "url";
     `;
     const { rows: response } = await connection.query(queryString, queryData);
     if(response.length === 0) {
@@ -68,6 +68,36 @@ export async function redirectByShortUrl(req, res) {
       return;
     }
     res.redirect(response[0].url);
+    return;
+  } catch (err) {
+    res.status(409).send();
+    return;
+  }
+}
+
+export async function deleteById(req, res) {
+  try {
+    const userId = res.locals.uid;
+    const table = tableSelect(res.locals.reqPath);
+    const queryData = res.locals.dbData.join().split(",").filter((i, id)=> id%2!==0);
+    queryData.push(userId);
+    const queryString = `
+      DELETE FROM ${table}
+      WHERE id=$1
+      AND "userId"=$2
+      RETURNING "shortUrl", "userId"=$2 AS "userOwned";
+    `;
+    const { rows: response } = await connection.query(queryString, queryData);
+    console.log(response);
+    if(!response[0].userOwned) {
+      res.status(401).send();
+      return;
+    }
+    if(response.length === 0) {
+      res.status(404).send();
+      return;
+    }
+    res.status(204).send(`${response[0].shortUrl} deleted.`);
     return;
   } catch (err) {
     res.status(409).send();

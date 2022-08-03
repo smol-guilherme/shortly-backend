@@ -36,7 +36,7 @@ async function dbAccess(res, table, queryData) {
     const queryString = `
     SELECT id, email, password
     FROM ${table}
-    WHERE email=$1
+    WHERE email=$1;
     `;
     const { rows: response } = await connection.query(queryString, queryData.splice(1, 1));
     return response;
@@ -64,13 +64,18 @@ export async function userLogin(req, res) {
 }
 
 export async function getUser(req, res, next) {
-  const queryData = res.locals.userToken
-  const table = 'users';
-  const response = await dbAccess(res, table, queryData);
-  if (response.length === 0) {
-    res.status(404).send();
+  try {
+    const queryData = res.locals.userToken
+    const table = 'users';
+    const response = await dbAccess(res, table, queryData);
+    if (response.length === 0) {
+      res.status(404).send();
+      return;
+    }
+    res.locals.uid = response[0].id;
+    next();
+  } catch (err) {
+    res.status(401).send();
     return;
   }
-  res.locals.uid = response[0].id;
-  next();
 }
