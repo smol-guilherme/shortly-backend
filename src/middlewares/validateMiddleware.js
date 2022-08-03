@@ -1,13 +1,15 @@
 import signinSchema from "../database/models/signinSchema.js";
 import signupSchema from "../database/models/signupSchema.js";
 import urlSchema from "../database/models/urlSchema.js";
+import shortUrlSchema from "../database/models/shortUrlSchema.js";
 import idSchema from "../database/models/idSchema.js";
 
 const schemas = {
   signin: signinSchema,
   signup: signupSchema,
+  shortUrl: shortUrlSchema,
   urls: urlSchema,
-  id: idSchema,
+  id: idSchema
 };
 
 export default async function validateEntry(req, res, next) {

@@ -12,7 +12,7 @@ export function aggregateData(req, res, next) {
       data.push(req[reqParams[key]])
     }
   }
-
+  console.log(data);
   res.locals.reqData = data;
   next();
 }
