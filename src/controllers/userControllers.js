@@ -80,7 +80,7 @@ export async function getUser(req, res, next) {
   }
 }
 
-export async function getUserData(req, res, next) {
+export async function getUserData(req, res) {
   try {
     const queryData = [res.locals.uid];
     const table = tableSelect(res.locals.reqPath);
@@ -109,6 +109,33 @@ export async function getUserData(req, res, next) {
     return;
   } catch (err) {
     console.log();
+    res.status(401).send();
+    return;
+  }
+}
+
+export async function getRankings(req, res) {
+  try {
+    const table = tableSelect(res.locals.reqPath);
+    const queryString=`
+    SELECT users.id, name, 
+    COUNT("url") "linksCount",
+    COALESCE(SUM("visitCount"), 0) "visitCount"
+    FROM ${table} LEFT JOIN urls ON users.id=urls."userId" 
+    GROUP BY users.id, name
+    ORDER BY "visitCount" ASC
+    LIMIT 10 
+    ;`;
+    console.log(queryString);
+    const { rows: response } = await connection.query(queryString);
+    if (response.length === 0) {
+      res.status(404).send();
+      return;
+    }
+    res.status(200).send(response);
+    return;
+  } catch (err) {
+    console.log(err);
     res.status(401).send();
     return;
   }
