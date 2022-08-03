@@ -19,7 +19,7 @@ export default async function validateEntry(req, res, next) {
         abortEarly: false,
       });
       res.locals.dbData = Object.entries(response);
-      next();
+      console.log(res.locals.dbData);
     } catch (err) {
       const errMessage = err.details.map((res) =>
         res.message
@@ -33,6 +33,7 @@ export default async function validateEntry(req, res, next) {
       return;
     }
   }
+  next();
 }
 
 function setSchema(objectData) {
