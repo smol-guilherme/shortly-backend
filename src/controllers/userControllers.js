@@ -108,7 +108,6 @@ export async function getUserData(req, res) {
     res.status(200).send(response[0]);
     return;
   } catch (err) {
-    console.log();
     res.status(401).send();
     return;
   }
@@ -126,7 +125,6 @@ export async function getRankings(req, res) {
     ORDER BY "visitCount" ASC
     LIMIT 10 
     ;`;
-    console.log(queryString);
     const { rows: response } = await connection.query(queryString);
     if (response.length === 0) {
       res.status(404).send();
@@ -135,7 +133,6 @@ export async function getRankings(req, res) {
     res.status(200).send(response);
     return;
   } catch (err) {
-    console.log(err);
     res.status(401).send();
     return;
   }

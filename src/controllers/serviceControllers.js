@@ -88,7 +88,6 @@ export async function deleteById(req, res) {
       RETURNING "shortUrl", "userId"=$2 AS "userOwned";
     `;
     const { rows: response } = await connection.query(queryString, queryData);
-    console.log(response);
     if(!response[0].userOwned) {
       res.status(401).send();
       return;
