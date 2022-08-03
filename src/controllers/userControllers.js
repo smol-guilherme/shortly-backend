@@ -79,3 +79,37 @@ export async function getUser(req, res, next) {
     return;
   }
 }
+
+export async function getUserData(req, res, next) {
+  try {
+    const queryData = [res.locals.uid];
+    const table = tableSelect(res.locals.reqPath);
+    const queryString=`
+    SELECT users.id, name, 
+    SUM("visitCount") "visitCount",
+    ARRAY
+    (
+      SELECT json_build_object(
+        'id', id, 
+        'shortUrl', "shortUrl", 
+        'url', url, 
+        'visitCount', "visitCount"
+      ) FROM urls WHERE "userId"=$1
+    ) AS "shortenedUrls"
+    FROM ${table} JOIN urls ON users.id=urls."userId" 
+    WHERE "userId"=$1
+    GROUP BY users.id, name;
+    `
+    const { rows: response } = await connection.query(queryString, queryData);
+    if (response.length === 0) {
+      res.status(404).send();
+      return;
+    }
+    res.status(200).send(response[0]);
+    return;
+  } catch (err) {
+    console.log();
+    res.status(401).send();
+    return;
+  }
+}
