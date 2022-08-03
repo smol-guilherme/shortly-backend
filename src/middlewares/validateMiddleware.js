@@ -19,7 +19,6 @@ export default async function validateEntry(req, res, next) {
         abortEarly: false,
       });
       res.locals.dbData = Object.entries(response);
-      console.log(res.locals.dbData);
     } catch (err) {
       const errMessage = err.details.map((res) =>
         res.message

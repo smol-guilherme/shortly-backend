@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { shortenUrl } from "../controllers/serviceControllers.js";
+import { getShortUrl, shortenUrl } from "../controllers/serviceControllers.js";
 import { handleValidate } from "../handlers/validationHandler.js";
 import { getUser } from "../controllers/userControllers.js"
 import { aggregateData } from "../middlewares/dataAggregationMiddleware.js";
@@ -8,10 +8,9 @@ import validateEntry from "../middlewares/validateMiddleware.js";
 
 const serviceRouter = Router();
 
-serviceRouter.get('/:id', handleValidate, aggregateData, clearData, validateEntry);
-serviceRouter.get('/open/:shortUrl');
-serviceRouter.post('/shorten', aggregateData, clearData, validateEntry, shortenUrl);
-// serviceRouter.post('/shorten', getUser, aggregateData, clearData, validateEntry, shortenUrl);
-serviceRouter.delete('/:id');
+serviceRouter.get('/urls/:id', handleValidate, aggregateData, clearData, validateEntry, getShortUrl);
+serviceRouter.get('/urls/open/:shortUrl');
+serviceRouter.post('/urls/shorten', handleValidate, getUser, aggregateData, clearData, validateEntry, shortenUrl);
+serviceRouter.delete('/urls/:id');
 
 export default serviceRouter;

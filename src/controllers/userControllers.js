@@ -64,7 +64,7 @@ export async function userLogin(req, res) {
 }
 
 export async function getUser(req, res, next) {
-  const queryData = res.locals.dbData
+  const queryData = res.locals.userToken
   const table = 'users';
   const response = await dbAccess(res, table, queryData);
   if (response.length === 0) {

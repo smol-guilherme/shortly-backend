@@ -7,6 +7,6 @@ export function handleValidate(req, res, next) {
         res.status(401).send();
         return;
     }
-    res.locals.dbData = token;
+    res.locals.userToken = token;
     next();
 }
