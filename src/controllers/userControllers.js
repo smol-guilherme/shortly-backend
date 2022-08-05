@@ -122,7 +122,7 @@ export async function getRankings(req, res) {
     COALESCE(SUM("visitCount"), 0) "visitCount"
     FROM ${table} LEFT JOIN urls ON users.id=urls."userId" 
     GROUP BY users.id, name
-    ORDER BY "visitCount" ASC
+    ORDER BY "visitCount" DESC
     LIMIT 10 
     ;`;
     const { rows: response } = await connection.query(queryString);
