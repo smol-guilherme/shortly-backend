@@ -80,26 +80,37 @@ export async function deleteById(req, res) {
     const userId = res.locals.uid;
     const table = tableSelect(res.locals.reqPath);
     const queryData = res.locals.dbData.join().split(",").filter((i, id)=> id%2!==0);
-    queryData.push(userId);
-    const queryString = `
-      DELETE FROM ${table}
-      WHERE id=$1
-      AND "userId"=$2
-      RETURNING "shortUrl", "userId"=$2 AS "userOwned";
-    `;
-    const { rows: response } = await connection.query(queryString, queryData);
-    if(!response[0].userOwned) {
-      res.status(401).send();
+    const find = await getEntry(queryData, table);
+    if(find.length === 0) {
+      res.status(404).send();
       return;
     }
+    const queryString = `
+    DELETE FROM ${table}
+    WHERE id=$1
+    AND "userId"=$2
+    RETURNING id, url, "shortUrl"
+    ;`;
+    queryData.push(userId);
+    const { rows: response } = await connection.query(queryString, queryData);
     if(response.length === 0) {
-      res.status(404).send();
+      res.status(401).send();
       return;
     }
     res.status(204).send(`${response[0].shortUrl} deleted.`);
     return;
   } catch (err) {
-    res.status(409).send();
+    res.status(401).send();
     return;
   }
+}
+
+async function getEntry(id, table) {
+  const queryString = `
+  SELECT id, "shortUrl", "url"
+  FROM ${table}
+  WHERE id=$1
+  ;`;
+  const { rows: response } = await connection.query(queryString, id)
+  return response;
 }

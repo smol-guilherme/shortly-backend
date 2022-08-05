@@ -38,7 +38,7 @@ async function dbAccess(res, table, queryData) {
     FROM ${table}
     WHERE email=$1;
     `;
-    const { rows: response } = await connection.query(queryString, queryData.splice(1, 1));
+    const { rows: response } = await connection.query(queryString, queryData);
     return response;
   } catch (err) {
     res.status(401).send();
@@ -52,8 +52,8 @@ export async function userLogin(req, res) {
     .join()
     .split(",")
     .filter((i, id) => id % 2 !== 0);
-  const response = await dbAccess(res, table, queryData);
-  if (passwordMatch(queryData[1], response[0].password)) {
+    const response = await dbAccess(res, table, [...queryData.splice(0, 1)]);
+  if (passwordMatch(queryData[0], response[0].password)) {
     const token = tokenHandler(response[0]);
     res.status(200).send(token);
     return;
@@ -67,7 +67,7 @@ export async function getUser(req, res, next) {
   try {
     const queryData = res.locals.userToken
     const table = 'users';
-    const response = await dbAccess(res, table, queryData);
+    const response = await dbAccess(res, table, queryData.splice(1, 1));
     if (response.length === 0) {
       res.status(404).send();
       return;

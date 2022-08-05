@@ -14,6 +14,7 @@ const schemas = {
 
 export default async function validateEntry(req, res, next) {
   const validationData = res.locals.cleanData;
+  
   for (const index in validationData) {
     try {
       const schema = schemas[setSchema(validationData[index])];
@@ -46,7 +47,7 @@ function setSchema(objectData) {
       case "id":
         return "id";
       case "url":
-        return "url";
+        return "urls";
       case "shortUrl":
         return "shortUrl";
       default:
