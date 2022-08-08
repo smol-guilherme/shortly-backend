@@ -123,8 +123,11 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.urls (id, url, "shortUrl", "visitCount", "userId", "createdAt") FROM stdin;
-5	https://app.dbdesigner.net/	OeD8Kgi0p3lI	0	7	2022-08-02 22:35:38.384993
-6	https://discord.gg/	pBJRvQLUZ_EM	6	7	2022-08-02 22:37:30.178412
+12	https://wweb.dev/resources/js-object-functions-cheatsheet/	q3vRNYjb_ley	0	7	2022-08-05 16:21:38.191921
+14	https://stackoverflow.com/questions/56832737/update-and-delete-together-on-postgresql	27aHe5u3wA1A	0	33	2022-08-05 16:22:19.167821
+16	https://www.postgresql.org/docs/13/sql-declare.html	GQJ7w0UHAUWk	0	7	2022-08-05 16:22:38.62484
+11	https://wweb.dev/resources/js-object-functions-cheatsheet/	wXum5MHXTrJL	2	33	2022-08-05 16:21:34.988614
+52	https://www.youtube.com/watch?v=9e5nhSqhX3s	ugM6-VQqR6KE	4	67	2022-08-08 13:56:25.094803
 \.
 
 
@@ -136,6 +139,10 @@ COPY public.users (id, name, email, password, "createdAt") FROM stdin;
 1	Ademir	ademir@driven.com.br	$2b$10$s8g.F6FEb6P1ri9dBYWfrOjCRBGXmYWvQ3PD5YHih1V/RhtRKhx72	2022-08-02 18:37:45.516911
 7	Marygod	mary@god.com.br	$2b$10$vmPUrzSdHBSCfMxp4Jx7oO7Tyfn..WWusUOGoikkaRr8MpThgQufC	2022-08-02 19:03:27.758116
 9	João	joao@driven.com.br	$2b$10$.jgSuyCkzaXvmVNK6HUdq.Wj5ChTc5nYdLJ8h2o0NsNWe8.Y8rvSq	2022-08-03 14:41:52.8821
+30	Frank	frank@professor.com.br	$2b$10$.EmrdcJtZo/JMihrtbMYnO5xa/A9RqZX3t1AUifhmLwlFiNe2Weyu	2022-08-05 14:01:19.437421
+33	Ilha	ilha@xd.com.br	$2b$10$oKTnxsmEWVHRfW7PoJPfTuDE2fNGqsCpfHLqVitdvJhLdrxA8BMaW	2022-08-05 14:13:27.720937
+67	Jason	jason@momoa.com.br	$2b$10$dnrVBUOAjSHuqGUNOpzFlutudooNA3ms1t4VdthAK3bob.toTMoNi	2022-08-08 13:42:25.527508
+68	Fernando	dinheiro@segue.com.br	$2b$10$RiJCdqiTr5w6DB6J60Yj8uxQ/gnZAphcCSFrbSBGPINw4Zu9Pz4E6	2022-08-08 13:52:20.207694
 \.
 
 
@@ -143,14 +150,14 @@ COPY public.users (id, name, email, password, "createdAt") FROM stdin;
 -- Name: urls_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ysldczkescxcxz
 --
 
-SELECT pg_catalog.setval('public.urls_id_seq', 6, true);
+SELECT pg_catalog.setval('public.urls_id_seq', 52, true);
 
 
 --
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ysldczkescxcxz
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 10, true);
+SELECT pg_catalog.setval('public.users_id_seq', 70, true);
 
 
 --
