@@ -39,6 +39,7 @@ async function dbAccess(res, table, queryData) {
     WHERE email=$1;
     `;
     const { rows: response } = await connection.query(queryString, queryData);
+
     return response;
   } catch (err) {
     res.status(401).send();
@@ -53,6 +54,10 @@ export async function userLogin(req, res) {
     .split(",")
     .filter((i, id) => id % 2 !== 0);
     const response = await dbAccess(res, table, [...queryData.splice(0, 1)]);
+  if(response.length === 0) {
+    res.status(404).send();
+    return;
+  }
   if (passwordMatch(queryData[0], response[0].password)) {
     const token = tokenHandler(response[0]);
     res.status(200).send(token);
@@ -86,7 +91,7 @@ export async function getUserData(req, res) {
     const table = tableSelect(res.locals.reqPath);
     const queryString=`
     SELECT users.id, name, 
-    SUM("visitCount") "visitCount",
+    COALESCE(SUM("visitCount"), 0) "visitCount",
     ARRAY
     (
       SELECT json_build_object(
@@ -96,10 +101,10 @@ export async function getUserData(req, res) {
         'visitCount', "visitCount"
       ) FROM urls WHERE "userId"=$1
     ) AS "shortenedUrls"
-    FROM ${table} JOIN urls ON users.id=urls."userId" 
-    WHERE "userId"=$1
-    GROUP BY users.id, name;
-    `
+    FROM ${table} LEFT JOIN urls ON users.id=urls."userId" 
+    WHERE users.id=$1
+    GROUP BY users.id, name
+    ;`;
     const { rows: response } = await connection.query(queryString, queryData);
     if (response.length === 0) {
       res.status(404).send();
